@@ -1074,7 +1074,8 @@
 
     /* ===== SPIN WHEEL MODAL ===== */
     .spin-modal {
-      max-width: 420px;
+      max-width: 380px;
+      background: var(--void);
     }
 
     .spin-modal-body {
@@ -1082,168 +1083,142 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
+      padding: 1rem 1.5rem 1.5rem;
     }
 
     .spin-title {
       font-family: 'Bangers', cursive;
-      font-size: 2.5rem;
+      font-size: 2rem;
       color: var(--white);
-      letter-spacing: 3px;
-      text-shadow: 0 0 20px var(--white-30);
+      letter-spacing: 2px;
       margin-bottom: 0.25rem;
     }
 
     .spin-title .amount {
       color: var(--accent);
-      text-shadow: 0 0 20px var(--accent-50), 0 0 40px var(--accent-30);
+      text-shadow: 0 0 20px var(--accent-50);
     }
 
     .spin-subtitle {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       color: var(--text-dim);
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      letter-spacing: 1px;
       margin-bottom: 1.5rem;
     }
 
-    /* Wheel wrapper */
-    .wheel-wrapper {
+    /* Wheel container */
+    .wheel-container {
       position: relative;
-      width: 260px;
-      height: 260px;
+      width: 240px;
+      height: 240px;
       margin-bottom: 1.5rem;
     }
 
-    /* Pointer/marker */
+    /* Pointer arrow */
     .wheel-pointer {
       position: absolute;
-      top: -12px;
+      top: -8px;
       left: 50%;
       transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 12px solid transparent;
-      border-right: 12px solid transparent;
-      border-top: 24px solid var(--accent);
-      z-index: 10;
-      filter: drop-shadow(0 0 10px var(--accent));
+      z-index: 20;
+      font-size: 1.5rem;
+      color: var(--accent);
+      filter: drop-shadow(0 0 8px var(--accent));
     }
 
-    /* The wheel */
+    /* The spinning wheel */
     .wheel {
       width: 100%;
       height: 100%;
       border-radius: 50%;
+      border: 4px solid var(--gray-light);
+      box-shadow: 0 0 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.3);
       position: relative;
-      transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-      box-shadow:
-        0 0 0 6px var(--gray-mid),
-        0 0 0 10px var(--white-20),
-        0 0 30px var(--white-10);
+      overflow: hidden;
+      transform: rotate(0deg);
     }
 
-    /* Wheel face - mostly dark with tiny $10k and small RETRY segments */
-    .wheel-face {
+    .wheel-inner {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      background: conic-gradient(
-        from 0deg,
-        #141414 0deg 15deg,
-        #BFFF00 15deg 30deg,
-        #141414 30deg 60deg,
-        #1a1a1a 60deg 120deg,
-        #141414 120deg 180deg,
-        #1a1a1a 180deg 240deg,
-        #141414 240deg 300deg,
-        #1a1a1a 300deg 330deg,
-        #ffffff 330deg 345deg,
-        #1a1a1a 345deg 360deg
-      );
       position: relative;
+      background: repeating-conic-gradient(
+        from 0deg,
+        #111 0deg 30deg,
+        #1a1a1a 30deg 60deg
+      );
+    }
+
+    /* The $10K segment - small and glowing */
+    .segment-10k {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 50%;
+      height: 50%;
+      transform-origin: 0% 100%;
+      transform: rotate(-75deg);
       overflow: hidden;
     }
 
-    /* Jackpot segment glow effect */
-    .jackpot-segment {
+    .segment-10k::before {
+      content: '';
       position: absolute;
       top: 0;
-      left: 50%;
-      width: 50%;
-      height: 50%;
-      transform-origin: bottom left;
-      transform: rotate(-7.5deg);
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding-top: 12px;
+      left: 0;
+      width: 200%;
+      height: 200%;
+      background: var(--accent);
+      transform-origin: 0% 100%;
+      transform: rotate(15deg) translateX(-50%);
+      box-shadow: 0 0 20px var(--accent), 0 0 40px var(--accent-50);
+      animation: glowPulse 1s ease-in-out infinite alternate;
     }
 
-    .jackpot-label {
+    .segment-10k-label {
+      position: absolute;
+      top: 20%;
+      left: 15%;
       font-family: 'Bangers', cursive;
-      font-size: 0.85rem;
+      font-size: 0.7rem;
       color: var(--black);
-      letter-spacing: 1px;
-      text-shadow: 0 0 5px var(--accent);
-      transform: rotate(7.5deg);
-      animation: jackpotPulse 1.5s ease infinite;
+      transform: rotate(-67deg);
+      font-weight: bold;
+      z-index: 2;
     }
 
-    @keyframes jackpotPulse {
-      0%, 100% { text-shadow: 0 0 5px var(--accent), 0 0 10px var(--accent); }
-      50% { text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px var(--accent-50); }
+    @keyframes glowPulse {
+      from { box-shadow: 0 0 15px var(--accent), 0 0 30px var(--accent-50); }
+      to { box-shadow: 0 0 25px var(--accent), 0 0 50px var(--accent-50); }
     }
 
-    /* Retry segment */
-    .retry-segment {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: 50%;
-      height: 50%;
-      transform-origin: bottom left;
-      transform: rotate(-157.5deg);
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding-top: 12px;
-    }
-
-    .retry-label {
-      font-family: 'Russo One', sans-serif;
-      font-size: 0.5rem;
-      color: var(--black);
-      letter-spacing: 1px;
-      transform: rotate(7.5deg);
-    }
-
-    /* Center cap */
+    /* Center of wheel */
     .wheel-center {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 55px;
-      height: 55px;
+      width: 50px;
+      height: 50px;
       background: var(--void);
       border-radius: 50%;
-      border: 3px solid var(--white-30);
+      border: 3px solid var(--gray-light);
+      z-index: 10;
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 5;
-      box-shadow: 0 0 20px var(--black);
     }
 
     .wheel-center span {
-      font-family: 'Bangers', cursive;
-      font-size: 0.9rem;
-      color: var(--white);
+      font-family: 'Russo One', sans-serif;
+      font-size: 0.6rem;
+      color: var(--accent);
       letter-spacing: 1px;
     }
 
-    /* Wallet input form */
+    /* Spin form */
     .spin-form {
       width: 100%;
       display: flex;
@@ -1253,73 +1228,67 @@
 
     .wallet-input {
       width: 100%;
-      padding: 0.9rem;
+      padding: 0.85rem 1rem;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      background: var(--void);
-      border: 2px solid var(--gray-mid);
+      font-size: 0.65rem;
+      background: var(--gray);
+      border: 1px solid var(--gray-mid);
+      border-radius: 6px;
       color: var(--text);
       outline: none;
-      transition: all 0.3s;
-      clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+      transition: all 0.2s;
       text-align: center;
     }
 
-    .wallet-input::placeholder {
-      color: var(--text-dim);
-    }
-
+    .wallet-input::placeholder { color: var(--text-dim); }
     .wallet-input:focus {
-      border-color: var(--accent-50);
-      box-shadow: 0 0 15px var(--accent-20);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-20);
     }
 
     .spin-btn {
-      padding: 0.9rem 1.5rem;
-      font-family: 'Bangers', cursive;
-      font-size: 1.3rem;
-      letter-spacing: 3px;
+      padding: 0.85rem 1.5rem;
+      font-family: 'Russo One', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
       background: var(--accent);
       border: none;
+      border-radius: 6px;
       color: var(--black);
       cursor: pointer;
-      transition: all 0.3s;
-      clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
-      box-shadow: 0 0 25px var(--accent-30);
+      transition: all 0.2s;
     }
 
     .spin-btn:hover:not(:disabled) {
-      box-shadow: 0 0 40px var(--accent-50);
-      transform: scale(1.02);
+      background: #d4ff33;
+      transform: translateY(-1px);
     }
 
     .spin-btn:disabled {
       background: var(--gray-mid);
       color: var(--text-dim);
       cursor: not-allowed;
-      box-shadow: none;
     }
 
     .spin-note {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.55rem;
       color: var(--text-dim);
-      letter-spacing: 1px;
-      margin-top: 0.5rem;
+      margin-top: 0.25rem;
     }
 
-    /* Prize popup */
+    /* Prize result popup */
     .prize-popup {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.95);
+      background: rgba(0,0,0,0.9);
       z-index: 10002;
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       visibility: hidden;
-      transition: all 0.3s ease;
+      transition: all 0.3s;
     }
 
     .prize-popup.active {
@@ -1329,96 +1298,76 @@
 
     .prize-content {
       text-align: center;
-      transform: scale(0.8);
-      transition: transform 0.3s ease;
       padding: 2rem;
-    }
-
-    .prize-popup.active .prize-content {
-      transform: scale(1);
     }
 
     .prize-label {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 3px;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
       color: var(--text-dim);
-      text-transform: uppercase;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
     }
 
     .prize-value {
       font-family: 'Bangers', cursive;
-      font-size: clamp(2.5rem, 10vw, 4rem);
+      font-size: 3rem;
       color: var(--white);
-      letter-spacing: 5px;
-      text-shadow: 0 0 20px var(--white-30);
-      margin-bottom: 1rem;
+      letter-spacing: 3px;
+      margin-bottom: 0.75rem;
     }
 
     .prize-message {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--text-dim);
-      margin-bottom: 2rem;
-      max-width: 280px;
+      margin-bottom: 1.5rem;
+      max-width: 260px;
     }
 
     .prize-close {
       font-family: 'Russo One', sans-serif;
-      font-size: 0.75rem;
-      letter-spacing: 2px;
-      background: var(--white);
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+      background: var(--accent);
       color: var(--black);
       border: none;
-      padding: 0.7rem 1.5rem;
+      border-radius: 4px;
+      padding: 0.6rem 1.5rem;
       cursor: pointer;
-      clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
       transition: all 0.2s;
     }
 
     .prize-close:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px var(--white-30);
+      background: #d4ff33;
     }
 
-    /* Spin button in nav */
+    /* Nav spin button */
     .nav-spin {
-      font-family: 'Bangers', cursive;
-      font-size: 0.9rem;
-      letter-spacing: 2px;
+      font-family: 'Russo One', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 1px;
       background: var(--accent);
       color: var(--black);
-      padding: 0.6rem 1rem;
-      text-decoration: none;
-      clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
-      box-shadow: 0 0 15px var(--accent-30);
+      padding: 0.5rem 0.9rem;
+      border-radius: 4px;
       cursor: pointer;
       border: none;
       transition: all 0.2s;
-      animation: spinBtnPulse 2s ease infinite;
     }
 
     .nav-spin:hover {
-      box-shadow: 0 0 25px var(--accent-50);
-      transform: scale(1.05);
+      background: #d4ff33;
     }
 
-    @keyframes spinBtnPulse {
-      0%, 100% { box-shadow: 0 0 15px var(--accent-30); }
-      50% { box-shadow: 0 0 25px var(--accent-50); }
-    }
-
-    /* Mobile adjustments for wheel */
+    /* Mobile */
     @media (max-width: 480px) {
-      .spin-modal { width: 95%; }
-      .spin-title { font-size: 2rem; }
-      .wheel-wrapper { width: 220px; height: 220px; }
-      .wheel-center { width: 45px; height: 45px; }
-      .wheel-center span { font-size: 0.8rem; }
-      .jackpot-label { font-size: 0.75rem; }
-      .spin-btn { font-size: 1.1rem; padding: 0.8rem 1.2rem; }
-      .wallet-input { font-size: 0.65rem; padding: 0.8rem; }
-      .nav-spin { font-size: 0.75rem; padding: 0.5rem 0.8rem; }
+      .spin-modal { width: 92%; }
+      .spin-modal-body { padding: 0.75rem 1rem 1.25rem; }
+      .spin-title { font-size: 1.6rem; }
+      .wheel-container { width: 200px; height: 200px; }
+      .wheel-center { width: 40px; height: 40px; }
+      .segment-10k-label { font-size: 0.6rem; }
+      .nav-spin { font-size: 0.6rem; padding: 0.4rem 0.7rem; }
     }
   </style>
 </head>
@@ -1523,20 +1472,15 @@
         <h2 class="spin-title">WIN <span class="amount">$10,000</span></h2>
         <p class="spin-subtitle">One free spin per day</p>
 
-        <div class="wheel-wrapper">
-          <div class="wheel-pointer"></div>
+        <div class="wheel-container">
+          <div class="wheel-pointer">▼</div>
           <div class="wheel" id="wheel">
-            <div class="wheel-face">
-              <!-- $10K segment (tiny, glowing) -->
-              <div class="jackpot-segment">
-                <span class="jackpot-label">$10K</span>
-              </div>
-              <!-- TRY AGAIN segment (small) -->
-              <div class="retry-segment">
-                <span class="retry-label">RETRY</span>
+            <div class="wheel-inner">
+              <div class="segment-10k">
+                <span class="segment-10k-label">$10K</span>
               </div>
             </div>
-            <div class="wheel-center"><span>SPIN</span></div>
+            <div class="wheel-center"><span>$10K</span></div>
           </div>
         </div>
 
@@ -1859,7 +1803,6 @@
         const data = await res.json();
 
         if (res.status === 429) {
-          // Server says no more spins
           setSpinState({ spun: true, hasRetry: false, retryUsed: true });
           btn.textContent = 'COME BACK TOMORROW';
           note.textContent = data.message || 'One spin per day!';
@@ -1871,32 +1814,26 @@
           throw new Error(data.error || 'Spin failed');
         }
 
-        // Update state based on result
+        // Update state
         if (usingRetry) {
-          // Used the retry, now definitely done for the day
           setSpinState({ spun: true, hasRetry: true, retryUsed: true });
         } else {
-          // First spin
           setSpinState({ spun: true, hasRetry: data.canRetry, retryUsed: false });
         }
 
-        // Spin animation
-        const spins = 6 + Math.random() * 2;
-        let landingAngle;
+        // Animate the wheel spin
+        const spins = 5 + Math.floor(Math.random() * 3); // 5-7 full rotations
+        // $10K segment is at ~75-90 degrees, so we avoid that
+        // Land somewhere between 100-350 degrees (safe zone)
+        const landingAngle = 100 + Math.random() * 250;
+        const totalRotation = (spins * 360) + landingAngle;
 
-        if (data.canRetry) {
-          // Land on TRY AGAIN segment (around 330-345 degrees)
-          landingAngle = 330 + Math.random() * 15;
-        } else {
-          // Land on empty segment (avoid $10k at 15-30deg and TRY AGAIN at 330-345deg)
-          landingAngle = 60 + Math.random() * 250;
-        }
+        // Apply spin animation
+        wheel.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+        currentRotation += totalRotation;
+        wheel.style.transform = `rotate(${currentRotation}deg)`;
 
-        const finalRotation = currentRotation + (360 * spins) + landingAngle;
-        wheel.style.transform = `rotate(${finalRotation}deg)`;
-        currentRotation = finalRotation;
-
-        // Show result after animation
+        // Show result after spin completes
         setTimeout(() => {
           if (data.canRetry) {
             showTryAgain();
@@ -1905,7 +1842,7 @@
           }
           updateSpinUI();
           isSpinning = false;
-        }, 5500);
+        }, 4200);
 
       } catch (err) {
         console.error('Spin error:', err);
@@ -1913,9 +1850,7 @@
         note.style.color = '#e00';
         isSpinning = false;
 
-        setTimeout(() => {
-          updateSpinUI();
-        }, 2000);
+        setTimeout(() => updateSpinUI(), 2000);
       }
     }
 
