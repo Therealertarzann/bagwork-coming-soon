@@ -1071,6 +1071,330 @@
         padding-top: calc(1rem + env(safe-area-inset-top));
       }
     }
+
+    /* ===== SPIN WHEEL SECTION ===== */
+    .spin-section {
+      background: var(--dark);
+      padding: 4rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .spin-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 0%, var(--accent-20) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .spin-header {
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .spin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent);
+      color: var(--black);
+      padding: 0.4rem 1rem;
+      font-family: 'Russo One', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+      margin-bottom: 1rem;
+    }
+
+    .spin-title {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      color: var(--white);
+      letter-spacing: 3px;
+      text-shadow: 0 0 20px var(--white-30), 3px 3px 0 var(--white-10);
+      margin-bottom: 0.5rem;
+    }
+
+    .spin-title .amount {
+      color: var(--accent);
+      text-shadow: 0 0 20px var(--accent-50), 3px 3px 0 var(--accent-20);
+    }
+
+    .spin-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .spin-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      max-width: 400px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* Wheel wrapper */
+    .wheel-wrapper {
+      position: relative;
+      width: 280px;
+      height: 280px;
+    }
+
+    /* Pointer/marker */
+    .wheel-pointer {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 30px solid var(--accent);
+      z-index: 10;
+      filter: drop-shadow(0 0 10px var(--accent));
+    }
+
+    /* The wheel */
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      position: relative;
+      transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+      box-shadow:
+        0 0 0 8px var(--gray-mid),
+        0 0 0 12px var(--white-20),
+        0 0 40px var(--white-10);
+    }
+
+    .wheel.spinning {
+      transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+    }
+
+    /* Wheel segments using conic gradient */
+    .wheel-face {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        #1a1a1a 0deg 51.4deg,
+        #252525 51.4deg 102.8deg,
+        #1a1a1a 102.8deg 154.3deg,
+        #252525 154.3deg 205.7deg,
+        #1a1a1a 205.7deg 257.1deg,
+        #252525 257.1deg 308.6deg,
+        #BFFF00 308.6deg 360deg
+      );
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Center cap */
+    .wheel-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      background: var(--void);
+      border-radius: 50%;
+      border: 4px solid var(--white-30);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      box-shadow: 0 0 20px var(--black);
+    }
+
+    .wheel-center span {
+      font-family: 'Bangers', cursive;
+      font-size: 1rem;
+      color: var(--white);
+      letter-spacing: 1px;
+    }
+
+    /* Segment labels */
+    .segment-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: 0 0;
+      font-family: 'Russo One', sans-serif;
+      font-size: 0.55rem;
+      color: var(--white);
+      letter-spacing: 1px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      white-space: nowrap;
+    }
+
+    .segment-label.jackpot {
+      color: var(--black);
+      font-weight: bold;
+    }
+
+    /* Wallet input form */
+    .spin-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .wallet-input {
+      width: 100%;
+      padding: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      background: var(--gray);
+      border: 2px solid var(--gray-mid);
+      color: var(--text);
+      outline: none;
+      transition: all 0.3s;
+      clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+      text-align: center;
+    }
+
+    .wallet-input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .wallet-input:focus {
+      border-color: var(--accent-50);
+      box-shadow: 0 0 20px var(--accent-20);
+    }
+
+    .spin-btn {
+      padding: 1rem 2rem;
+      font-family: 'Bangers', cursive;
+      font-size: 1.5rem;
+      letter-spacing: 3px;
+      background: var(--accent);
+      border: none;
+      color: var(--black);
+      cursor: pointer;
+      transition: all 0.3s;
+      clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+      box-shadow: 0 0 30px var(--accent-30);
+    }
+
+    .spin-btn:hover:not(:disabled) {
+      box-shadow: 0 0 50px var(--accent-50);
+      transform: scale(1.02);
+    }
+
+    .spin-btn:disabled {
+      background: var(--gray-mid);
+      color: var(--text-dim);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .spin-note {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    /* Prize popup */
+    .prize-popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .prize-popup.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .prize-content {
+      text-align: center;
+      transform: scale(0.8);
+      transition: transform 0.3s ease;
+    }
+
+    .prize-popup.active .prize-content {
+      transform: scale(1);
+    }
+
+    .prize-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .prize-value {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(3rem, 12vw, 6rem);
+      color: var(--accent);
+      letter-spacing: 5px;
+      text-shadow: 0 0 30px var(--accent-50), 0 0 60px var(--accent-30);
+      margin-bottom: 1rem;
+      animation: prizeGlow 1s ease infinite alternate;
+    }
+
+    @keyframes prizeGlow {
+      from { text-shadow: 0 0 30px var(--accent-50), 0 0 60px var(--accent-30); }
+      to { text-shadow: 0 0 50px var(--accent-50), 0 0 100px var(--accent-30), 0 0 150px var(--accent-20); }
+    }
+
+    .prize-message {
+      font-size: 1rem;
+      color: var(--white-70);
+      margin-bottom: 2rem;
+    }
+
+    .prize-close {
+      font-family: 'Russo One', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      background: var(--white);
+      color: var(--black);
+      border: none;
+      padding: 0.75rem 2rem;
+      cursor: pointer;
+      clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+      transition: all 0.2s;
+    }
+
+    .prize-close:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px var(--white-30);
+    }
+
+    /* Mobile adjustments for wheel */
+    @media (max-width: 480px) {
+      .spin-section { padding: 3rem 1rem; }
+      .spin-title { font-size: 1.8rem; }
+      .wheel-wrapper { width: 240px; height: 240px; }
+      .wheel-center { width: 50px; height: 50px; }
+      .wheel-center span { font-size: 0.85rem; }
+      .segment-label { font-size: 0.45rem; }
+      .spin-btn { font-size: 1.2rem; padding: 0.9rem 1.5rem; }
+      .wallet-input { font-size: 0.7rem; }
+    }
   </style>
 </head>
 <body>
@@ -1157,6 +1481,50 @@
       <span class="ticker-item">TEAM BATTLES</span>
       <span class="ticker-item">PLAY TO WIN</span>
       <span class="ticker-item">COMING SOON</span>
+    </div>
+  </div>
+
+  <!-- Spin Wheel Section -->
+  <section class="spin-section">
+    <div class="spin-header">
+      <span class="spin-badge">DAILY SPIN</span>
+      <h2 class="spin-title">WIN UP TO <span class="amount">$10,000</span></h2>
+      <p class="spin-subtitle">One free spin per day • Enter wallet to claim</p>
+    </div>
+
+    <div class="spin-container">
+      <div class="wheel-wrapper">
+        <div class="wheel-pointer"></div>
+        <div class="wheel" id="wheel">
+          <div class="wheel-face">
+            <!-- Labels positioned around the wheel -->
+            <span class="segment-label" style="transform: rotate(25.7deg) translateX(75px);">EARLY ACCESS</span>
+            <span class="segment-label" style="transform: rotate(77.1deg) translateX(75px);">2X BONUS</span>
+            <span class="segment-label" style="transform: rotate(128.5deg) translateX(75px);">VIP STATUS</span>
+            <span class="segment-label" style="transform: rotate(180deg) translateX(75px);">FREE SPIN</span>
+            <span class="segment-label" style="transform: rotate(231.4deg) translateX(75px);">$100</span>
+            <span class="segment-label" style="transform: rotate(282.8deg) translateX(75px);">$500</span>
+            <span class="segment-label jackpot" style="transform: rotate(334.3deg) translateX(75px);">$10,000</span>
+          </div>
+          <div class="wheel-center"><span>SPIN</span></div>
+        </div>
+      </div>
+
+      <form class="spin-form" onsubmit="handleSpin(event)">
+        <input type="text" class="wallet-input" id="walletInput" placeholder="Enter your wallet address" required minlength="32" maxlength="64">
+        <button type="submit" class="spin-btn" id="spinBtn">SPIN TO WIN!</button>
+      </form>
+      <p class="spin-note" id="spinNote">Prizes redeemable at launch</p>
+    </div>
+  </section>
+
+  <!-- Prize Popup -->
+  <div class="prize-popup" id="prizePopup">
+    <div class="prize-content">
+      <p class="prize-label">You Won</p>
+      <h2 class="prize-value" id="prizeValue">VIP STATUS</h2>
+      <p class="prize-message">Your prize has been recorded!</p>
+      <button class="prize-close" onclick="closePrizePopup()">CLAIM & CLOSE</button>
     </div>
   </div>
 
@@ -1335,6 +1703,120 @@
 
     // Start fetching count on load
     setTimeout(fetchWaitlistCount, 500);
+
+    // ===== SPIN WHEEL =====
+    const PRIZES = [
+      'EARLY ACCESS',
+      '2X BONUS',
+      'VIP STATUS',
+      'FREE SPIN',
+      '$100 CREDIT',
+      '$500 CREDIT',
+      '$10,000'
+    ];
+
+    let isSpinning = false;
+    let currentRotation = 0;
+
+    async function handleSpin(e) {
+      e.preventDefault();
+
+      if (isSpinning) return;
+
+      const wallet = document.getElementById('walletInput').value.trim();
+      const btn = document.getElementById('spinBtn');
+      const wheel = document.getElementById('wheel');
+      const note = document.getElementById('spinNote');
+
+      if (wallet.length < 32) {
+        note.textContent = 'Please enter a valid wallet address';
+        note.style.color = '#e00';
+        return;
+      }
+
+      isSpinning = true;
+      btn.disabled = true;
+      btn.textContent = 'SPINNING...';
+      note.textContent = 'Good luck!';
+      note.style.color = '';
+
+      try {
+        const res = await fetch('/api/spin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ wallet })
+        });
+
+        const data = await res.json();
+
+        if (res.status === 429) {
+          // Already spun today
+          btn.textContent = 'COME BACK TOMORROW';
+          note.textContent = data.message || 'One spin per day!';
+          note.style.color = 'var(--accent)';
+          isSpinning = false;
+          return;
+        }
+
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Spin failed');
+        }
+
+        // Calculate spin animation
+        const segmentAngle = 360 / PRIZES.length;
+        // Add multiple full rotations + land on the prize segment
+        // The pointer is at top (0deg), segments start from right
+        // We need to calculate where the prize segment is and add offset
+        const prizeIndex = data.prizeIndex;
+        const targetAngle = (prizeIndex * segmentAngle) + (segmentAngle / 2);
+        const spins = 5; // Number of full rotations
+        const finalRotation = currentRotation + (360 * spins) + (360 - targetAngle) + 90;
+
+        wheel.style.transform = `rotate(${finalRotation}deg)`;
+        currentRotation = finalRotation;
+
+        // Show prize after animation
+        setTimeout(() => {
+          showPrize(data.prize);
+          btn.textContent = 'COME BACK TOMORROW';
+          btn.disabled = true;
+          note.textContent = 'See you tomorrow for another spin!';
+          note.style.color = 'var(--accent)';
+          isSpinning = false;
+        }, 4500);
+
+      } catch (err) {
+        console.error('Spin error:', err);
+        btn.textContent = 'TRY AGAIN';
+        note.textContent = err.message || 'Something went wrong';
+        note.style.color = '#e00';
+        isSpinning = false;
+
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.textContent = 'SPIN TO WIN!';
+        }, 2000);
+      }
+    }
+
+    function showPrize(prize) {
+      document.getElementById('prizeValue').textContent = prize;
+      document.getElementById('prizePopup').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePrizePopup() {
+      document.getElementById('prizePopup').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Close prize popup on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closePrizePopup();
+        closeModal();
+      }
+    });
   </script>
 </body>
 </html>
