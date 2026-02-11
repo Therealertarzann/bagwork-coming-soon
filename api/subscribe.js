@@ -24,7 +24,8 @@ export default async function handler(req, res) {
 
     const sheets = google.sheets({ version: 'v4', auth });
 
-    const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+    // Trim to remove any accidental whitespace/newlines from env var
+    const spreadsheetId = process.env.GOOGLE_SHEET_ID.trim();
 
     // Append the email with timestamp
     await sheets.spreadsheets.values.append({
