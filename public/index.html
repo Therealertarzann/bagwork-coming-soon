@@ -1118,104 +1118,32 @@
     /* Pointer arrow */
     .wheel-pointer {
       position: absolute;
-      top: -8px;
+      top: -5px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 20;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       color: var(--accent);
-      filter: drop-shadow(0 0 8px var(--accent));
+      filter: drop-shadow(0 0 6px var(--accent));
     }
 
-    /* The spinning wheel */
-    .wheel {
-      width: 100%;
-      height: 100%;
+    #wheelCanvas {
       border-radius: 50%;
-      border: 4px solid var(--gray-light);
-      box-shadow: 0 0 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.3);
-      position: relative;
-      overflow: hidden;
-      transform: rotate(0deg);
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
 
-    .wheel-inner {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      position: relative;
-      background: repeating-conic-gradient(
-        from 0deg,
-        #111 0deg 30deg,
-        #1a1a1a 30deg 60deg
-      );
-    }
-
-    /* The $10K segment - small and glowing */
-    .segment-10k {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: 50%;
-      height: 50%;
-      transform-origin: 0% 100%;
-      transform: rotate(-75deg);
-      overflow: hidden;
-    }
-
-    .segment-10k::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 200%;
-      height: 200%;
-      background: var(--accent);
-      transform-origin: 0% 100%;
-      transform: rotate(15deg) translateX(-50%);
-      box-shadow: 0 0 20px var(--accent), 0 0 40px var(--accent-50);
-      animation: glowPulse 1s ease-in-out infinite alternate;
-    }
-
-    .segment-10k-label {
-      position: absolute;
-      top: 20%;
-      left: 15%;
-      font-family: 'Bangers', cursive;
-      font-size: 0.7rem;
-      color: var(--black);
-      transform: rotate(-67deg);
-      font-weight: bold;
-      z-index: 2;
-    }
-
-    @keyframes glowPulse {
-      from { box-shadow: 0 0 15px var(--accent), 0 0 30px var(--accent-50); }
-      to { box-shadow: 0 0 25px var(--accent), 0 0 50px var(--accent-50); }
-    }
-
-    /* Center of wheel */
-    .wheel-center {
+    .wheel-center-dot {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 50px;
-      height: 50px;
+      width: 40px;
+      height: 40px;
       background: var(--void);
       border-radius: 50%;
-      border: 3px solid var(--gray-light);
+      border: 3px solid var(--accent);
       z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .wheel-center span {
-      font-family: 'Russo One', sans-serif;
-      font-size: 0.6rem;
-      color: var(--accent);
-      letter-spacing: 1px;
+      box-shadow: 0 0 15px var(--accent-30);
     }
 
     /* Spin form */
@@ -1474,14 +1402,8 @@
 
         <div class="wheel-container">
           <div class="wheel-pointer">▼</div>
-          <div class="wheel" id="wheel">
-            <div class="wheel-inner">
-              <div class="segment-10k">
-                <span class="segment-10k-label">$10K</span>
-              </div>
-            </div>
-            <div class="wheel-center"><span>$10K</span></div>
-          </div>
+          <canvas id="wheelCanvas" width="240" height="240"></canvas>
+          <div class="wheel-center-dot"></div>
         </div>
 
         <form class="spin-form" onsubmit="handleSpin(event)">
@@ -1679,9 +1601,103 @@
     // Start fetching count on load
     setTimeout(fetchWaitlistCount, 500);
 
-    // ===== SPIN WHEEL MODAL =====
+    // ===== SPIN WHEEL =====
     const SPIN_STORAGE_KEY = 'bagwork_spin_state';
     const BASE58_CHARS = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+
+    // Wheel state
+    let wheelAngle = 0;
+    let isSpinning = false;
+    let wheelCanvas, wheelCtx;
+
+    // Initialize wheel on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      wheelCanvas = document.getElementById('wheelCanvas');
+      if (wheelCanvas) {
+        wheelCtx = wheelCanvas.getContext('2d');
+        drawWheel(0);
+      }
+    });
+
+    // Draw the wheel
+    function drawWheel(rotation) {
+      if (!wheelCtx) return;
+      const ctx = wheelCtx;
+      const w = wheelCanvas.width;
+      const h = wheelCanvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const r = Math.min(cx, cy) - 5;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(rotation * Math.PI / 180);
+
+      // Draw 12 segments
+      const segments = 12;
+      const segAngle = (2 * Math.PI) / segments;
+
+      for (let i = 0; i < segments; i++) {
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, r, i * segAngle, (i + 1) * segAngle);
+        ctx.closePath();
+
+        // One segment is the $10K (lime), rest are dark
+        if (i === 0) {
+          ctx.fillStyle = '#BFFF00';
+        } else {
+          ctx.fillStyle = i % 2 === 0 ? '#1a1a1a' : '#111111';
+        }
+        ctx.fill();
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      // Draw $10K label on the winning segment
+      ctx.rotate(segAngle / 2);
+      ctx.fillStyle = '#000';
+      ctx.font = 'bold 14px Russo One, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('$10K', r * 0.65, 5);
+
+      ctx.restore();
+
+      // Outer ring
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+      ctx.strokeStyle = '#444';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+    }
+
+    // Animate spin
+    function animateSpin(targetAngle, duration, callback) {
+      const startAngle = wheelAngle;
+      const startTime = performance.now();
+
+      function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Easing function (ease out cubic)
+        const eased = 1 - Math.pow(1 - progress, 3);
+
+        wheelAngle = startAngle + (targetAngle - startAngle) * eased;
+        drawWheel(wheelAngle);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          wheelAngle = targetAngle;
+          if (callback) callback();
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
 
     function isValidSolanaWallet(address) {
       if (!address || address.length < 32 || address.length > 44) return false;
@@ -1699,7 +1715,6 @@
       try {
         const state = JSON.parse(localStorage.getItem(SPIN_STORAGE_KEY) || '{}');
         if (state.date !== getToday()) {
-          // New day, reset state
           return { date: getToday(), spun: false, hasRetry: false, retryUsed: false };
         }
         return state;
@@ -1716,7 +1731,6 @@
 
     function canSpin() {
       const state = getSpinState();
-      // Can spin if: haven't spun yet, OR have a retry that hasn't been used
       return !state.spun || (state.hasRetry && !state.retryUsed);
     }
 
@@ -1728,6 +1742,12 @@
     function openSpinModal() {
       document.getElementById('spinModal').classList.add('active');
       document.body.style.overflow = 'hidden';
+      // Reinit canvas when modal opens
+      wheelCanvas = document.getElementById('wheelCanvas');
+      if (wheelCanvas) {
+        wheelCtx = wheelCanvas.getContext('2d');
+        drawWheel(wheelAngle);
+      }
       updateSpinUI();
     }
 
@@ -1739,7 +1759,6 @@
     function updateSpinUI() {
       const btn = document.getElementById('spinBtn');
       const note = document.getElementById('spinNote');
-      const state = getSpinState();
 
       if (!canSpin()) {
         btn.disabled = true;
@@ -1759,25 +1778,19 @@
       }
     }
 
-    // Close spin modal on overlay click
+    // Close modal on overlay click
     document.getElementById('spinModal').addEventListener('click', (e) => {
       if (e.target === e.currentTarget) closeSpinModal();
     });
 
-    let isSpinning = false;
-    let currentRotation = 0;
-
     async function handleSpin(e) {
       e.preventDefault();
-
       if (isSpinning || !canSpin()) return;
 
       const wallet = document.getElementById('walletInput').value.trim();
       const btn = document.getElementById('spinBtn');
-      const wheel = document.getElementById('wheel');
       const note = document.getElementById('spinNote');
 
-      // Validate Solana wallet
       if (!isValidSolanaWallet(wallet)) {
         note.textContent = 'Enter a valid Solana wallet address';
         note.style.color = '#e00';
@@ -1786,7 +1799,6 @@
       }
 
       const usingRetry = isUsingRetry();
-
       isSpinning = true;
       btn.disabled = true;
       btn.textContent = 'SPINNING...';
@@ -1821,20 +1833,14 @@
           setSpinState({ spun: true, hasRetry: data.canRetry, retryUsed: false });
         }
 
-        // Animate the wheel spin
-        const spins = 5 + Math.floor(Math.random() * 3); // 5-7 full rotations
-        // $10K segment is at ~75-90 degrees, so we avoid that
-        // Land somewhere between 100-350 degrees (safe zone)
-        const landingAngle = 100 + Math.random() * 250;
-        const totalRotation = (spins * 360) + landingAngle;
+        // Spin animation - always land away from $10K (segment 0)
+        // Land on segments 3-10 (safe zone)
+        const spins = 5 + Math.floor(Math.random() * 3);
+        const safeSegment = 3 + Math.floor(Math.random() * 8);
+        const segmentAngle = 360 / 12;
+        const targetAngle = wheelAngle + (spins * 360) + (safeSegment * segmentAngle) + (segmentAngle / 2);
 
-        // Apply spin animation
-        wheel.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
-        currentRotation += totalRotation;
-        wheel.style.transform = `rotate(${currentRotation}deg)`;
-
-        // Show result after spin completes
-        setTimeout(() => {
+        animateSpin(targetAngle, 4000, () => {
           if (data.canRetry) {
             showTryAgain();
           } else {
@@ -1842,14 +1848,13 @@
           }
           updateSpinUI();
           isSpinning = false;
-        }, 4200);
+        });
 
       } catch (err) {
         console.error('Spin error:', err);
         note.textContent = err.message || 'Something went wrong';
         note.style.color = '#e00';
         isSpinning = false;
-
         setTimeout(() => updateSpinUI(), 2000);
       }
     }
