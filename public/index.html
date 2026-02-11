@@ -1072,93 +1072,60 @@
       }
     }
 
-    /* ===== SPIN WHEEL SECTION ===== */
-    .spin-section {
-      background: var(--dark);
-      padding: 4rem 2rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
+    /* ===== SPIN WHEEL MODAL ===== */
+    .spin-modal {
+      max-width: 420px;
     }
 
-    .spin-section::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse at 50% 0%, var(--accent-20) 0%, transparent 50%);
-      pointer-events: none;
-    }
-
-    .spin-header {
-      margin-bottom: 2rem;
-      position: relative;
-    }
-
-    .spin-badge {
-      display: inline-flex;
+    .spin-modal-body {
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 0.5rem;
-      background: var(--accent);
-      color: var(--black);
-      padding: 0.4rem 1rem;
-      font-family: 'Russo One', sans-serif;
-      font-size: 0.7rem;
-      letter-spacing: 2px;
-      clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
-      margin-bottom: 1rem;
+      text-align: center;
     }
 
     .spin-title {
       font-family: 'Bangers', cursive;
-      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-size: 2.5rem;
       color: var(--white);
       letter-spacing: 3px;
-      text-shadow: 0 0 20px var(--white-30), 3px 3px 0 var(--white-10);
-      margin-bottom: 0.5rem;
+      text-shadow: 0 0 20px var(--white-30);
+      margin-bottom: 0.25rem;
     }
 
     .spin-title .amount {
       color: var(--accent);
-      text-shadow: 0 0 20px var(--accent-50), 3px 3px 0 var(--accent-20);
+      text-shadow: 0 0 20px var(--accent-50), 0 0 40px var(--accent-30);
     }
 
     .spin-subtitle {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--text-dim);
       letter-spacing: 2px;
       text-transform: uppercase;
-    }
-
-    .spin-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2rem;
-      max-width: 400px;
-      margin: 0 auto;
-      position: relative;
+      margin-bottom: 1.5rem;
     }
 
     /* Wheel wrapper */
     .wheel-wrapper {
       position: relative;
-      width: 280px;
-      height: 280px;
+      width: 260px;
+      height: 260px;
+      margin-bottom: 1.5rem;
     }
 
     /* Pointer/marker */
     .wheel-pointer {
       position: absolute;
-      top: -15px;
+      top: -12px;
       left: 50%;
       transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 15px solid transparent;
-      border-right: 15px solid transparent;
-      border-top: 30px solid var(--accent);
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-top: 24px solid var(--accent);
       z-index: 10;
       filter: drop-shadow(0 0 10px var(--accent));
     }
@@ -1169,34 +1136,86 @@
       height: 100%;
       border-radius: 50%;
       position: relative;
-      transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+      transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
       box-shadow:
-        0 0 0 8px var(--gray-mid),
-        0 0 0 12px var(--white-20),
-        0 0 40px var(--white-10);
+        0 0 0 6px var(--gray-mid),
+        0 0 0 10px var(--white-20),
+        0 0 30px var(--white-10);
     }
 
-    .wheel.spinning {
-      transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-    }
-
-    /* Wheel segments using conic gradient */
+    /* Wheel face - mostly dark with tiny $10k and small RETRY segments */
     .wheel-face {
       width: 100%;
       height: 100%;
       border-radius: 50%;
       background: conic-gradient(
         from 0deg,
-        #1a1a1a 0deg 51.4deg,
-        #252525 51.4deg 102.8deg,
-        #1a1a1a 102.8deg 154.3deg,
-        #252525 154.3deg 205.7deg,
-        #1a1a1a 205.7deg 257.1deg,
-        #252525 257.1deg 308.6deg,
-        #BFFF00 308.6deg 360deg
+        #141414 0deg 15deg,
+        #BFFF00 15deg 30deg,
+        #141414 30deg 60deg,
+        #1a1a1a 60deg 120deg,
+        #141414 120deg 180deg,
+        #1a1a1a 180deg 240deg,
+        #141414 240deg 300deg,
+        #1a1a1a 300deg 330deg,
+        #ffffff 330deg 345deg,
+        #1a1a1a 345deg 360deg
       );
       position: relative;
       overflow: hidden;
+    }
+
+    /* Jackpot segment glow effect */
+    .jackpot-segment {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 50%;
+      height: 50%;
+      transform-origin: bottom left;
+      transform: rotate(-7.5deg);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 12px;
+    }
+
+    .jackpot-label {
+      font-family: 'Bangers', cursive;
+      font-size: 0.85rem;
+      color: var(--black);
+      letter-spacing: 1px;
+      text-shadow: 0 0 5px var(--accent);
+      transform: rotate(7.5deg);
+      animation: jackpotPulse 1.5s ease infinite;
+    }
+
+    @keyframes jackpotPulse {
+      0%, 100% { text-shadow: 0 0 5px var(--accent), 0 0 10px var(--accent); }
+      50% { text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px var(--accent-50); }
+    }
+
+    /* Retry segment */
+    .retry-segment {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 50%;
+      height: 50%;
+      transform-origin: bottom left;
+      transform: rotate(-157.5deg);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 12px;
+    }
+
+    .retry-label {
+      font-family: 'Russo One', sans-serif;
+      font-size: 0.5rem;
+      color: var(--black);
+      letter-spacing: 1px;
+      transform: rotate(7.5deg);
     }
 
     /* Center cap */
@@ -1205,11 +1224,11 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 60px;
-      height: 60px;
+      width: 55px;
+      height: 55px;
       background: var(--void);
       border-radius: 50%;
-      border: 4px solid var(--white-30);
+      border: 3px solid var(--white-30);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1219,28 +1238,9 @@
 
     .wheel-center span {
       font-family: 'Bangers', cursive;
-      font-size: 1rem;
+      font-size: 0.9rem;
       color: var(--white);
       letter-spacing: 1px;
-    }
-
-    /* Segment labels */
-    .segment-label {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform-origin: 0 0;
-      font-family: 'Russo One', sans-serif;
-      font-size: 0.55rem;
-      color: var(--white);
-      letter-spacing: 1px;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-      white-space: nowrap;
-    }
-
-    .segment-label.jackpot {
-      color: var(--black);
-      font-weight: bold;
     }
 
     /* Wallet input form */
@@ -1248,20 +1248,20 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.75rem;
     }
 
     .wallet-input {
       width: 100%;
-      padding: 1rem;
+      padding: 0.9rem;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      background: var(--gray);
+      font-size: 0.7rem;
+      background: var(--void);
       border: 2px solid var(--gray-mid);
       color: var(--text);
       outline: none;
       transition: all 0.3s;
-      clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+      clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
       text-align: center;
     }
 
@@ -1271,25 +1271,25 @@
 
     .wallet-input:focus {
       border-color: var(--accent-50);
-      box-shadow: 0 0 20px var(--accent-20);
+      box-shadow: 0 0 15px var(--accent-20);
     }
 
     .spin-btn {
-      padding: 1rem 2rem;
+      padding: 0.9rem 1.5rem;
       font-family: 'Bangers', cursive;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       letter-spacing: 3px;
       background: var(--accent);
       border: none;
       color: var(--black);
       cursor: pointer;
       transition: all 0.3s;
-      clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
-      box-shadow: 0 0 30px var(--accent-30);
+      clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+      box-shadow: 0 0 25px var(--accent-30);
     }
 
     .spin-btn:hover:not(:disabled) {
-      box-shadow: 0 0 50px var(--accent-50);
+      box-shadow: 0 0 40px var(--accent-50);
       transform: scale(1.02);
     }
 
@@ -1302,9 +1302,10 @@
 
     .spin-note {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.6rem;
+      font-size: 0.55rem;
       color: var(--text-dim);
       letter-spacing: 1px;
+      margin-top: 0.5rem;
     }
 
     /* Prize popup */
@@ -1312,7 +1313,7 @@
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.95);
-      z-index: 9999;
+      z-index: 10002;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1330,6 +1331,7 @@
       text-align: center;
       transform: scale(0.8);
       transition: transform 0.3s ease;
+      padding: 2rem;
     }
 
     .prize-popup.active .prize-content {
@@ -1347,35 +1349,30 @@
 
     .prize-value {
       font-family: 'Bangers', cursive;
-      font-size: clamp(3rem, 12vw, 6rem);
-      color: var(--accent);
+      font-size: clamp(2.5rem, 10vw, 4rem);
+      color: var(--white);
       letter-spacing: 5px;
-      text-shadow: 0 0 30px var(--accent-50), 0 0 60px var(--accent-30);
+      text-shadow: 0 0 20px var(--white-30);
       margin-bottom: 1rem;
-      animation: prizeGlow 1s ease infinite alternate;
-    }
-
-    @keyframes prizeGlow {
-      from { text-shadow: 0 0 30px var(--accent-50), 0 0 60px var(--accent-30); }
-      to { text-shadow: 0 0 50px var(--accent-50), 0 0 100px var(--accent-30), 0 0 150px var(--accent-20); }
     }
 
     .prize-message {
-      font-size: 1rem;
-      color: var(--white-70);
+      font-size: 0.9rem;
+      color: var(--text-dim);
       margin-bottom: 2rem;
+      max-width: 280px;
     }
 
     .prize-close {
       font-family: 'Russo One', sans-serif;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       letter-spacing: 2px;
       background: var(--white);
       color: var(--black);
       border: none;
-      padding: 0.75rem 2rem;
+      padding: 0.7rem 1.5rem;
       cursor: pointer;
-      clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+      clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
       transition: all 0.2s;
     }
 
@@ -1384,16 +1381,44 @@
       box-shadow: 0 0 20px var(--white-30);
     }
 
+    /* Spin button in nav */
+    .nav-spin {
+      font-family: 'Bangers', cursive;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      background: var(--accent);
+      color: var(--black);
+      padding: 0.6rem 1rem;
+      text-decoration: none;
+      clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+      box-shadow: 0 0 15px var(--accent-30);
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      animation: spinBtnPulse 2s ease infinite;
+    }
+
+    .nav-spin:hover {
+      box-shadow: 0 0 25px var(--accent-50);
+      transform: scale(1.05);
+    }
+
+    @keyframes spinBtnPulse {
+      0%, 100% { box-shadow: 0 0 15px var(--accent-30); }
+      50% { box-shadow: 0 0 25px var(--accent-50); }
+    }
+
     /* Mobile adjustments for wheel */
     @media (max-width: 480px) {
-      .spin-section { padding: 3rem 1rem; }
-      .spin-title { font-size: 1.8rem; }
-      .wheel-wrapper { width: 240px; height: 240px; }
-      .wheel-center { width: 50px; height: 50px; }
-      .wheel-center span { font-size: 0.85rem; }
-      .segment-label { font-size: 0.45rem; }
-      .spin-btn { font-size: 1.2rem; padding: 0.9rem 1.5rem; }
-      .wallet-input { font-size: 0.7rem; }
+      .spin-modal { width: 95%; }
+      .spin-title { font-size: 2rem; }
+      .wheel-wrapper { width: 220px; height: 220px; }
+      .wheel-center { width: 45px; height: 45px; }
+      .wheel-center span { font-size: 0.8rem; }
+      .jackpot-label { font-size: 0.75rem; }
+      .spin-btn { font-size: 1.1rem; padding: 0.8rem 1.2rem; }
+      .wallet-input { font-size: 0.65rem; padding: 0.8rem; }
+      .nav-spin { font-size: 0.75rem; padding: 0.5rem 0.8rem; }
     }
   </style>
 </head>
@@ -1408,7 +1433,10 @@
       <li><a href="https://x.com/onlybagwork" target="_blank">Twitter</a></li>
       <li><a href="#" onclick="openModal(); return false;">About</a></li>
     </ul>
-    <a href="#" class="nav-cta">JOIN WAITLIST</a>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <button class="nav-spin" onclick="openSpinModal()">$10K SPIN</button>
+      <a href="#" class="nav-cta">JOIN WAITLIST</a>
+    </div>
   </nav>
 
   <!-- Hero -->
@@ -1484,47 +1512,50 @@
     </div>
   </div>
 
-  <!-- Spin Wheel Section -->
-  <section class="spin-section">
-    <div class="spin-header">
-      <span class="spin-badge">DAILY SPIN</span>
-      <h2 class="spin-title">WIN UP TO <span class="amount">$10,000</span></h2>
-      <p class="spin-subtitle">One free spin per day • Enter wallet to claim</p>
-    </div>
-
-    <div class="spin-container">
-      <div class="wheel-wrapper">
-        <div class="wheel-pointer"></div>
-        <div class="wheel" id="wheel">
-          <div class="wheel-face">
-            <!-- Labels positioned around the wheel -->
-            <span class="segment-label" style="transform: rotate(25.7deg) translateX(75px);">EARLY ACCESS</span>
-            <span class="segment-label" style="transform: rotate(77.1deg) translateX(75px);">2X BONUS</span>
-            <span class="segment-label" style="transform: rotate(128.5deg) translateX(75px);">VIP STATUS</span>
-            <span class="segment-label" style="transform: rotate(180deg) translateX(75px);">FREE SPIN</span>
-            <span class="segment-label" style="transform: rotate(231.4deg) translateX(75px);">$100</span>
-            <span class="segment-label" style="transform: rotate(282.8deg) translateX(75px);">$500</span>
-            <span class="segment-label jackpot" style="transform: rotate(334.3deg) translateX(75px);">$10,000</span>
-          </div>
-          <div class="wheel-center"><span>SPIN</span></div>
-        </div>
+  <!-- Spin Wheel Modal -->
+  <div class="modal-overlay" id="spinModal">
+    <div class="modal spin-modal">
+      <div class="modal-header">
+        <span class="modal-tag">Daily Spin</span>
+        <button class="modal-close" onclick="closeSpinModal()">&times;</button>
       </div>
+      <div class="modal-body spin-modal-body">
+        <h2 class="spin-title">WIN <span class="amount">$10,000</span></h2>
+        <p class="spin-subtitle">One free spin per day</p>
 
-      <form class="spin-form" onsubmit="handleSpin(event)">
-        <input type="text" class="wallet-input" id="walletInput" placeholder="Enter your wallet address" required minlength="32" maxlength="64">
-        <button type="submit" class="spin-btn" id="spinBtn">SPIN TO WIN!</button>
-      </form>
-      <p class="spin-note" id="spinNote">Prizes redeemable at launch</p>
+        <div class="wheel-wrapper">
+          <div class="wheel-pointer"></div>
+          <div class="wheel" id="wheel">
+            <div class="wheel-face">
+              <!-- $10K segment (tiny, glowing) -->
+              <div class="jackpot-segment">
+                <span class="jackpot-label">$10K</span>
+              </div>
+              <!-- TRY AGAIN segment (small) -->
+              <div class="retry-segment">
+                <span class="retry-label">RETRY</span>
+              </div>
+            </div>
+            <div class="wheel-center"><span>SPIN</span></div>
+          </div>
+        </div>
+
+        <form class="spin-form" onsubmit="handleSpin(event)">
+          <input type="text" class="wallet-input" id="walletInput" placeholder="Enter wallet address to spin" required minlength="32" maxlength="64">
+          <button type="submit" class="spin-btn" id="spinBtn">SPIN TO WIN</button>
+        </form>
+        <p class="spin-note" id="spinNote">Enter wallet • Spin daily • Win big</p>
+      </div>
     </div>
-  </section>
+  </div>
 
   <!-- Prize Popup -->
   <div class="prize-popup" id="prizePopup">
     <div class="prize-content">
-      <p class="prize-label">You Won</p>
-      <h2 class="prize-value" id="prizeValue">VIP STATUS</h2>
-      <p class="prize-message">Your prize has been recorded!</p>
-      <button class="prize-close" onclick="closePrizePopup()">CLAIM & CLOSE</button>
+      <p class="prize-label" id="prizeLabel">Better Luck Tomorrow!</p>
+      <h2 class="prize-value" id="prizeValue">NO WIN</h2>
+      <p class="prize-message" id="prizeMessage">Come back tomorrow for another chance at $10,000!</p>
+      <button class="prize-close" onclick="closePrizePopup()">CLOSE</button>
     </div>
   </div>
 
@@ -1704,16 +1735,90 @@
     // Start fetching count on load
     setTimeout(fetchWaitlistCount, 500);
 
-    // ===== SPIN WHEEL =====
-    const PRIZES = [
-      'EARLY ACCESS',
-      '2X BONUS',
-      'VIP STATUS',
-      'FREE SPIN',
-      '$100 CREDIT',
-      '$500 CREDIT',
-      '$10,000'
-    ];
+    // ===== SPIN WHEEL MODAL =====
+    const SPIN_STORAGE_KEY = 'bagwork_spin_state';
+    const BASE58_CHARS = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+
+    function isValidSolanaWallet(address) {
+      if (!address || address.length < 32 || address.length > 44) return false;
+      for (const char of address) {
+        if (!BASE58_CHARS.includes(char)) return false;
+      }
+      return true;
+    }
+
+    function getToday() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function getSpinState() {
+      try {
+        const state = JSON.parse(localStorage.getItem(SPIN_STORAGE_KEY) || '{}');
+        if (state.date !== getToday()) {
+          // New day, reset state
+          return { date: getToday(), spun: false, hasRetry: false, retryUsed: false };
+        }
+        return state;
+      } catch {
+        return { date: getToday(), spun: false, hasRetry: false, retryUsed: false };
+      }
+    }
+
+    function setSpinState(updates) {
+      const state = getSpinState();
+      Object.assign(state, updates, { date: getToday() });
+      localStorage.setItem(SPIN_STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function canSpin() {
+      const state = getSpinState();
+      // Can spin if: haven't spun yet, OR have a retry that hasn't been used
+      return !state.spun || (state.hasRetry && !state.retryUsed);
+    }
+
+    function isUsingRetry() {
+      const state = getSpinState();
+      return state.spun && state.hasRetry && !state.retryUsed;
+    }
+
+    function openSpinModal() {
+      document.getElementById('spinModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      updateSpinUI();
+    }
+
+    function closeSpinModal() {
+      document.getElementById('spinModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function updateSpinUI() {
+      const btn = document.getElementById('spinBtn');
+      const note = document.getElementById('spinNote');
+      const state = getSpinState();
+
+      if (!canSpin()) {
+        btn.disabled = true;
+        btn.textContent = 'COME BACK TOMORROW';
+        note.textContent = 'You already spun today!';
+        note.style.color = 'var(--accent)';
+      } else if (isUsingRetry()) {
+        btn.disabled = false;
+        btn.textContent = 'SPIN AGAIN!';
+        note.textContent = 'Use your free retry!';
+        note.style.color = 'var(--accent)';
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'SPIN TO WIN';
+        note.textContent = 'Enter wallet • Spin daily • Win big';
+        note.style.color = '';
+      }
+    }
+
+    // Close spin modal on overlay click
+    document.getElementById('spinModal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeSpinModal();
+    });
 
     let isSpinning = false;
     let currentRotation = 0;
@@ -1721,39 +1826,43 @@
     async function handleSpin(e) {
       e.preventDefault();
 
-      if (isSpinning) return;
+      if (isSpinning || !canSpin()) return;
 
       const wallet = document.getElementById('walletInput').value.trim();
       const btn = document.getElementById('spinBtn');
       const wheel = document.getElementById('wheel');
       const note = document.getElementById('spinNote');
 
-      if (wallet.length < 32) {
-        note.textContent = 'Please enter a valid wallet address';
+      // Validate Solana wallet
+      if (!isValidSolanaWallet(wallet)) {
+        note.textContent = 'Enter a valid Solana wallet address';
         note.style.color = '#e00';
+        setTimeout(() => updateSpinUI(), 2000);
         return;
       }
+
+      const usingRetry = isUsingRetry();
 
       isSpinning = true;
       btn.disabled = true;
       btn.textContent = 'SPINNING...';
       note.textContent = 'Good luck!';
-      note.style.color = '';
+      note.style.color = 'var(--accent)';
 
       try {
         const res = await fetch('/api/spin', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ wallet })
+          body: JSON.stringify({ wallet, isRetry: usingRetry })
         });
 
         const data = await res.json();
 
         if (res.status === 429) {
-          // Already spun today
+          // Server says no more spins
+          setSpinState({ spun: true, hasRetry: false, retryUsed: true });
           btn.textContent = 'COME BACK TOMORROW';
           note.textContent = data.message || 'One spin per day!';
-          note.style.color = 'var(--accent)';
           isSpinning = false;
           return;
         }
@@ -1762,58 +1871,77 @@
           throw new Error(data.error || 'Spin failed');
         }
 
-        // Calculate spin animation
-        const segmentAngle = 360 / PRIZES.length;
-        // Add multiple full rotations + land on the prize segment
-        // The pointer is at top (0deg), segments start from right
-        // We need to calculate where the prize segment is and add offset
-        const prizeIndex = data.prizeIndex;
-        const targetAngle = (prizeIndex * segmentAngle) + (segmentAngle / 2);
-        const spins = 5; // Number of full rotations
-        const finalRotation = currentRotation + (360 * spins) + (360 - targetAngle) + 90;
+        // Update state based on result
+        if (usingRetry) {
+          // Used the retry, now definitely done for the day
+          setSpinState({ spun: true, hasRetry: true, retryUsed: true });
+        } else {
+          // First spin
+          setSpinState({ spun: true, hasRetry: data.canRetry, retryUsed: false });
+        }
 
+        // Spin animation
+        const spins = 6 + Math.random() * 2;
+        let landingAngle;
+
+        if (data.canRetry) {
+          // Land on TRY AGAIN segment (around 330-345 degrees)
+          landingAngle = 330 + Math.random() * 15;
+        } else {
+          // Land on empty segment (avoid $10k at 15-30deg and TRY AGAIN at 330-345deg)
+          landingAngle = 60 + Math.random() * 250;
+        }
+
+        const finalRotation = currentRotation + (360 * spins) + landingAngle;
         wheel.style.transform = `rotate(${finalRotation}deg)`;
         currentRotation = finalRotation;
 
-        // Show prize after animation
+        // Show result after animation
         setTimeout(() => {
-          showPrize(data.prize);
-          btn.textContent = 'COME BACK TOMORROW';
-          btn.disabled = true;
-          note.textContent = 'See you tomorrow for another spin!';
-          note.style.color = 'var(--accent)';
+          if (data.canRetry) {
+            showTryAgain();
+          } else {
+            showNoWin();
+          }
+          updateSpinUI();
           isSpinning = false;
-        }, 4500);
+        }, 5500);
 
       } catch (err) {
         console.error('Spin error:', err);
-        btn.textContent = 'TRY AGAIN';
         note.textContent = err.message || 'Something went wrong';
         note.style.color = '#e00';
         isSpinning = false;
 
         setTimeout(() => {
-          btn.disabled = false;
-          btn.textContent = 'SPIN TO WIN!';
+          updateSpinUI();
         }, 2000);
       }
     }
 
-    function showPrize(prize) {
-      document.getElementById('prizeValue').textContent = prize;
+    function showNoWin() {
+      document.getElementById('prizeLabel').textContent = 'Better Luck Tomorrow!';
+      document.getElementById('prizeValue').textContent = 'SO CLOSE!';
+      document.getElementById('prizeMessage').textContent = 'Come back tomorrow for another chance at $10,000!';
       document.getElementById('prizePopup').classList.add('active');
-      document.body.style.overflow = 'hidden';
+    }
+
+    function showTryAgain() {
+      document.getElementById('prizeLabel').textContent = 'Lucky!';
+      document.getElementById('prizeValue').textContent = 'FREE SPIN!';
+      document.getElementById('prizeMessage').textContent = 'You get another spin! Go for the $10,000!';
+      document.getElementById('prizePopup').classList.add('active');
     }
 
     function closePrizePopup() {
       document.getElementById('prizePopup').classList.remove('active');
-      document.body.style.overflow = '';
     }
 
-    // Close prize popup on escape
+    // Close modals on escape
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closePrizePopup();
+        closeSpinModal();
         closeModal();
       }
     });

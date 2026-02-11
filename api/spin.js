@@ -1,27 +1,15 @@
 import { google } from 'googleapis';
 
-// Prize segments (the 10k is there but will never be selected)
-const PRIZES = [
-  { name: 'EARLY ACCESS', weight: 30 },
-  { name: '2X BONUS', weight: 25 },
-  { name: 'VIP STATUS', weight: 20 },
-  { name: 'FREE SPIN', weight: 15 },
-  { name: '$100 CREDIT', weight: 8 },
-  { name: '$500 CREDIT', weight: 2 },
-  { name: '$10,000', weight: 0 }, // Weight 0 = never wins
-];
+// Solana wallet validation (Base58 check)
+const BASE58_CHARS = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
-// Get weighted random prize (excludes $10k)
-function getRandomPrize() {
-  const totalWeight = PRIZES.reduce((sum, p) => sum + p.weight, 0);
-  let random = Math.random() * totalWeight;
-
-  for (const prize of PRIZES) {
-    if (prize.weight === 0) continue; // Skip impossible prizes
-    random -= prize.weight;
-    if (random <= 0) return prize.name;
+function isValidSolanaWallet(address) {
+  if (!address || typeof address !== 'string') return false;
+  if (address.length < 32 || address.length > 44) return false;
+  for (const char of address) {
+    if (!BASE58_CHARS.includes(char)) return false;
   }
-  return PRIZES[0].name; // Fallback
+  return true;
 }
 
 export default async function handler(req, res) {
@@ -29,17 +17,19 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { wallet } = req.body;
+  const { wallet, isRetry } = req.body;
 
-  // Validate wallet address (basic Solana/ETH format check)
-  if (!wallet || wallet.length < 32 || wallet.length > 64) {
-    return res.status(400).json({ error: 'Invalid wallet address' });
+  // Validate Solana wallet address
+  if (!isValidSolanaWallet(wallet)) {
+    return res.status(400).json({ error: 'Invalid Solana wallet address' });
   }
 
   // Get IP address
   const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
              req.headers['x-real-ip'] ||
              'unknown';
+
+  const today = new Date().toISOString().split('T')[0];
 
   try {
     const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
@@ -51,18 +41,16 @@ export default async function handler(req, res) {
     const sheets = google.sheets({ version: 'v4', auth });
     const spreadsheetId = process.env.GOOGLE_SHEET_ID.trim();
 
-    // Check if IP already spun today - look in Sheet2 (Spins)
-    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-
-    let hasSpunToday = false;
+    // Check spin history for this IP today
+    let spinsToday = [];
     try {
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId,
-        range: 'Spins!A:C',
+        range: 'Spins!A:E',
       });
 
       const rows = response.data.values || [];
-      hasSpunToday = rows.some(row => row[0] === ip && row[2]?.startsWith(today));
+      spinsToday = rows.filter(row => row[0] === ip && row[2]?.startsWith(today));
     } catch (e) {
       // Sheet might not exist yet, create it
       if (e.message?.includes('Unable to parse range')) {
@@ -83,34 +71,62 @@ export default async function handler(req, res) {
       }
     }
 
-    if (hasSpunToday) {
+    // Count spins today
+    const spinCount = spinsToday.length;
+    const hasUsedRetry = spinsToday.some(row => row[4] === 'RETRY_USED');
+    const gotTryAgain = spinsToday.some(row => row[3] === 'TRY_AGAIN');
+
+    // Spin limit logic:
+    // - 0 spins: allowed
+    // - 1 spin that was TRY_AGAIN and no RETRY_USED: allowed (this is the retry)
+    // - Any other case: blocked
+
+    if (spinCount === 0) {
+      // First spin of the day - allowed
+    } else if (spinCount === 1 && gotTryAgain && !hasUsedRetry && isRetry) {
+      // Using their retry from TRY_AGAIN - allowed
+    } else {
+      // Already spun today
       return res.status(429).json({
         error: 'Already spun today',
         message: 'Come back tomorrow for another spin!'
       });
     }
 
-    // Get the prize
-    const prize = getRandomPrize();
+    // Determine result
+    let result, canRetry;
+
+    if (isRetry) {
+      // Retry spin - can only be NO_WIN (no infinite retries)
+      result = 'NO_WIN';
+      canRetry = false;
+    } else {
+      // First spin - 5% chance of TRY_AGAIN
+      const roll = Math.random() * 100;
+      if (roll < 5) {
+        result = 'TRY_AGAIN';
+        canRetry = true;
+      } else {
+        result = 'NO_WIN';
+        canRetry = false;
+      }
+    }
 
     // Log the spin
+    const logResult = isRetry ? 'RETRY_USED' : result;
     await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range: 'Spins!A:D',
+      range: 'Spins!A:E',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
-        values: [[ip, wallet, new Date().toISOString(), prize]],
+        values: [[ip, wallet, new Date().toISOString(), result, isRetry ? 'RETRY_USED' : '']],
       },
     });
 
-    // Return prize with the segment index for animation
-    const prizeIndex = PRIZES.findIndex(p => p.name === prize);
-
     return res.status(200).json({
       success: true,
-      prize,
-      prizeIndex,
-      totalSegments: PRIZES.length
+      result,
+      canRetry
     });
 
   } catch (error) {
