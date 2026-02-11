@@ -1259,13 +1259,15 @@
       if (e.key === 'Escape') closeModal();
     });
 
+    // Store the current waitlist count
+    let waitlistTotal = 2847;
+
     // Form handler
     async function handleSubmit(e) {
       e.preventDefault();
       const btn = e.target.querySelector('.submit-btn');
       const input = e.target.querySelector('.email-input');
       const count = document.getElementById('waitlistCount');
-      const currentCount = parseInt(count.textContent.replace(',', ''));
 
       btn.disabled = true;
       btn.textContent = 'SENDING...';
@@ -1277,16 +1279,21 @@
           body: JSON.stringify({ email: input.value })
         });
 
-        if (res.ok) {
+        const data = await res.json();
+
+        if (res.ok && data.success) {
           btn.textContent = "YOU'RE IN!";
           btn.style.background = 'var(--accent)';
-          count.textContent = (currentCount + 1).toLocaleString();
-          e.target.reset();
+          waitlistTotal++;
+          count.textContent = waitlistTotal.toLocaleString();
+          input.value = '';
         } else {
           btn.textContent = 'TRY AGAIN';
+          console.error('Subscribe error:', data);
         }
       } catch (err) {
-        btn.textContent = 'ERROR';
+        btn.textContent = 'TRY AGAIN';
+        console.error('Network error:', err);
       }
 
       setTimeout(() => {
@@ -1309,8 +1316,25 @@
       window.requestAnimationFrame(step);
     }
 
-    // Start counter animation on load
-    setTimeout(() => animateValue('waitlistCount', 0, 2847, 1500), 500);
+    // Fetch live waitlist count from API
+    async function fetchWaitlistCount() {
+      try {
+        const res = await fetch('/api/count');
+        const data = await res.json();
+        if (data.success && data.count) {
+          waitlistTotal = data.count;
+          animateValue('waitlistCount', 0, waitlistTotal, 1500);
+        } else {
+          animateValue('waitlistCount', 0, 2847, 1500);
+        }
+      } catch (err) {
+        // Fallback to base count on error
+        animateValue('waitlistCount', 0, 2847, 1500);
+      }
+    }
+
+    // Start fetching count on load
+    setTimeout(fetchWaitlistCount, 500);
   </script>
 </body>
 </html>
