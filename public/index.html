@@ -889,60 +889,187 @@
     }
 
     /* ===== RESPONSIVE ===== */
+
+    /* Tablet */
     @media (max-width: 900px) {
       nav { padding: 1rem 1.5rem; }
       .nav-links { display: none; }
       .logo { font-size: 1.4rem; }
+      .logo-x { font-size: 1rem; padding: 0.1rem 0.4rem; }
       .nav-cta { padding: 0.7rem 1.2rem; font-size: 0.75rem; }
 
-      .hero { padding: 6rem 1.5rem 2rem; }
-      .hero-title { font-size: clamp(4rem, 15vw, 8rem); }
-      .hero-subtitle { font-size: 1rem; letter-spacing: 4px; }
+      .hero { padding: 6rem 1.5rem 2rem; min-height: 100svh; }
+      .hero-title { font-size: clamp(3rem, 12vw, 6rem); letter-spacing: 4px; }
+      .title-tld { display: block; margin-top: 0.25rem; }
 
-      .battle-section { gap: 1.5rem; }
-      .player-slot { width: 80px; height: 110px; }
+      .hero-desc { font-size: 0.9rem; padding: 0 1rem; margin-bottom: 1.5rem; }
+      .hero-badge { margin-bottom: 1.5rem; }
+
+      .battle-section { gap: 1.5rem; margin-bottom: 2rem; }
+      .player-slot { width: 85px; height: 110px; }
+      .player-avatar { width: 40px; height: 40px; }
       .vs-text { font-size: 2.2rem; }
 
-      .feature-badges { gap: 0.5rem; }
+      .feature-badges { gap: 0.5rem; margin-bottom: 2rem; }
       .feature-badge { font-size: 0.65rem; padding: 0.4rem 0.75rem; }
 
-      .email-form { flex-direction: column; gap: 0.5rem; }
+      .email-form {
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
+        max-width: 320px;
+      }
       .email-input {
         width: 100%;
-        max-width: 280px;
-        border-right: 2px solid var(--gray-mid);
+        border: 2px solid var(--gray-mid);
         clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+        text-align: center;
+        padding: 1rem;
+        font-size: 1rem;
       }
       .submit-btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 0.9rem;
         clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
       }
 
-      .ticker-item { font-size: 1rem; padding: 0 1rem; }
+      .ticker { padding: 0.75rem 0; }
+      .ticker-item { font-size: 1.1rem; padding: 0 1.5rem; gap: 1.5rem; }
+      .ticker-item::after { font-size: 0.8rem; }
 
       .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
       .stats-bar { padding: 2rem 1.5rem; }
-      .stat-value { font-size: 2rem; }
+      .stat-item { padding: 1.25rem 1rem; }
+      .stat-value { font-size: 1.8rem; }
+      .stat-label { font-size: 0.55rem; letter-spacing: 1px; }
 
       footer { padding: 1.5rem; }
       footer::before { margin: -1.5rem -1.5rem 1.5rem; }
       .footer-content { flex-direction: column; gap: 1rem; text-align: center; }
-      .footer-links { gap: 1.5rem; }
+      .footer-links { gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+      .footer-logo { font-size: 1.2rem; }
 
+      /* Modal mobile */
+      .modal {
+        width: 95%;
+        max-height: 90vh;
+        clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+      }
+      .modal-header { padding: 1.5rem 1.5rem 0; }
+      .modal-body { padding: 1.25rem 1.5rem 1.5rem; }
+      .modal-title { font-size: 1.4rem; letter-spacing: 2px; }
+      .modal-text { font-size: 0.9rem; line-height: 1.7; }
+      .modal-features { gap: 0.75rem; }
+      .modal-feature-icon { width: 40px; height: 40px; font-size: 0.8rem; }
+      .modal-feature-label { font-size: 0.5rem; }
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      nav { padding: 0.75rem 1rem; }
+      .logo { font-size: 1.2rem; letter-spacing: 2px; }
+      .logo-x { font-size: 0.9rem; }
+      .nav-cta { padding: 0.6rem 1rem; font-size: 0.7rem; letter-spacing: 1px; }
+
+      .hero { padding: 5rem 1rem 1.5rem; }
+      .hero-title { font-size: clamp(2.5rem, 15vw, 4rem); letter-spacing: 2px; margin-bottom: 0.5rem; }
+      .title-tld { font-size: 0.7em; }
+
+      .hero-badge { padding: 0.4rem 0.75rem; margin-bottom: 1rem; }
+      .hero-badge-icon { width: 8px; height: 8px; }
+      .hero-badge-text { font-size: 0.5rem; letter-spacing: 2px; }
+
+      .hero-desc { font-size: 0.85rem; line-height: 1.6; padding: 0 0.5rem; margin-bottom: 1.25rem; }
+
+      .battle-section { gap: 1rem; margin-bottom: 1.5rem; }
+      .player-slot { width: 70px; height: 90px; gap: 0.5rem; }
+      .player-avatar { width: 32px; height: 32px; }
+      .player-avatar svg { width: 16px; height: 16px; }
+      .player-name { font-size: 0.45rem; letter-spacing: 1px; }
+      .vs-text { font-size: 1.6rem; }
+      .vs-sub { font-size: 0.4rem; letter-spacing: 2px; }
+
+      .feature-badges { gap: 0.4rem; margin-bottom: 1.5rem; }
+      .feature-badge { font-size: 0.55rem; padding: 0.35rem 0.6rem; letter-spacing: 1px; }
+
+      .cta-container { gap: 1rem; }
+      .email-form { max-width: 100%; padding: 0 0.5rem; }
+      .email-input {
+        padding: 0.9rem;
+        font-size: 0.9rem;
+        border-radius: 0;
+      }
+      .submit-btn {
+        padding: 0.9rem;
+        font-size: 0.8rem;
+      }
+      .waitlist-count { font-size: 0.6rem; }
+
+      .ticker { padding: 0.6rem 0; }
+      .ticker-item { font-size: 0.9rem; padding: 0 1rem; gap: 1rem; letter-spacing: 2px; }
+      .ticker-item::after { font-size: 0.7rem; padding: 0.15rem 0.4rem; }
+
+      .stats-bar { padding: 1.5rem 1rem; }
+      .stats-grid { gap: 0.75rem; }
+      .stat-item { padding: 1rem 0.75rem; }
+      .stat-value { font-size: 1.5rem; }
+      .stat-label { font-size: 0.45rem; margin-top: 0.5rem; }
+
+      footer { padding: 1.25rem 1rem; }
+      footer::before { margin: -1.25rem -1rem 1.25rem; height: 2px; }
+      .footer-logo { font-size: 1rem; letter-spacing: 2px; }
+      .footer-links { gap: 1rem; }
+      .footer-links a { font-size: 0.6rem; }
+
+      /* Modal mobile small */
+      .modal-header { padding: 1.25rem 1.25rem 0; }
+      .modal-close { font-size: 1.25rem; }
+      .modal-body { padding: 1rem 1.25rem 1.25rem; }
+      .modal-title { font-size: 1.2rem; margin-bottom: 1rem; }
+      .modal-text { font-size: 0.85rem; margin-bottom: 1rem; }
+      .modal-features { margin: 1.5rem 0; }
+      .modal-feature-icon { width: 35px; height: 35px; font-size: 0.7rem; }
+      .modal-cta { margin-top: 1rem; padding-top: 1rem; }
+      .modal-cta a { font-size: 0.7rem; }
+    }
+
+    /* Extra small phones */
+    @media (max-width: 360px) {
+      .hero-title { font-size: 2.2rem; }
+      .title-tld { font-size: 0.65em; }
+      .player-slot { width: 60px; height: 80px; }
+      .player-avatar { width: 28px; height: 28px; }
+      .vs-text { font-size: 1.4rem; }
+      .feature-badge { font-size: 0.5rem; padding: 0.3rem 0.5rem; }
+    }
+
+    /* Touch-friendly improvements */
+    @media (hover: none) and (pointer: coarse) {
+      .player-slot:hover { transform: none; }
+      .stat-item:hover { transform: none; }
+      .nav-cta:hover { transform: none; }
+      .submit-btn:hover { transform: none; }
+
+      .submit-btn:active {
+        transform: scale(0.98);
+        box-shadow: 0 0 20px var(--accent-30);
       }
 
-    @media (max-width: 480px) {
-      .hero-title { font-size: 3.5rem; letter-spacing: 4px; }
-      .hero-subtitle { font-size: 0.85rem; }
-      .hero-badge { padding: 0.4rem 1rem; }
-      .hero-badge-text { font-size: 0.55rem; letter-spacing: 2px; }
+      .player-slot:active {
+        border-color: var(--white-50);
+        box-shadow: 0 0 20px var(--white-10);
+      }
+    }
 
-      .player-slot { width: 70px; height: 95px; }
-      .player-avatar { width: 35px; height: 35px; }
-      .vs-text { font-size: 1.8rem; }
-
-      .stats-grid { grid-template-columns: 1fr 1fr; }
-      .stat-value { font-size: 1.8rem; }
-      .stat-label { font-size: 0.5rem; }
+    /* Safe area for notched phones */
+    @supports (padding: env(safe-area-inset-bottom)) {
+      footer {
+        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+      }
+      nav {
+        padding-top: calc(1rem + env(safe-area-inset-top));
+      }
     }
   </style>
 </head>
